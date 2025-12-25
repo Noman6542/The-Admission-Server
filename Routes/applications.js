@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: "You do not meet GPA/IELTS requirement" });
     }
 
-    // ✅ Step 1.5: Check for duplicate application
+    //  Check for duplicate application
     const [existing] = await db.query(
       "SELECT * FROM applications WHERE email=? AND university_id=?",
       [email, universityId]
