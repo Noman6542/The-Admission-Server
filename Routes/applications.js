@@ -18,21 +18,29 @@ router.post('/', async (req, res) => {
       return res.status(404).json({ error: "University not found" });
     }
 
-    if (
-      parseFloat(gpa) < university.minGPA ||
-      parseFloat(ielts) < university.minIELTS
-    ) {
-      return res
-        .status(400)
-        .json({ error: "You do not meet GPA/IELTS requirement" });
+    const gpaNum = parseFloat(gpa);
+    const ieltsNum = parseFloat(ielts);
+
+    if (gpaNum < university.min_gpa || ieltsNum < university.min_ielts) {
+      return res.status(400).json({ error: "You do not meet GPA/IELTS requirement" });
+    }
+
+    // ✅ Step 1.5: Check for duplicate application
+    const [existing] = await db.query(
+      "SELECT * FROM applications WHERE email=? AND university_id=?",
+      [email, universityId]
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ error: "You already applied to this university" });
     }
 
     // Step 2: Save application
     await db.query(
-      `INSERT INTO applications 
-      (name, email, phone, degree, gpa, ielts, universityId, status, createdAt) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'Submitted', NOW())`,
-      [name, email, phone, degree, gpa, ielts, universityId]
+      `INSERT INTO applications
+       (student_name, email, gpa, ielts, university_id, applied_at)
+       VALUES (?, ?, ?, ?, ?, NOW())`,
+      [name, email, gpaNum, ieltsNum, universityId]
     );
 
     res.json({ success: true, message: "Application submitted successfully" });
