@@ -10,7 +10,7 @@ app.use(express.json());
 app.use('/api/universities', universitiesRouter);
 app.use('/api/applications', applicationsRouter);
 
-app.listen(4000, () => console.log("Server running on http://localhost:4000"));
+// app.listen(4000, () => console.log("Server running on http://localhost:4000"));
 app.get("/", (req, res) => {
   res.send("Server is running ");
 });
