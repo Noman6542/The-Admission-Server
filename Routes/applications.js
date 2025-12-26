@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 
     //  Check for duplicate application
     const [existing] = await db.query(
-      "SELECT * FROM applications WHERE email=? AND university_id=?",
+      "SELECT * FROM application WHERE email=? AND university_id=?",
       [email, universityId]
     );
 
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
 
     // Step 2: Save application
     await db.query(
-      `INSERT INTO applications
+      `INSERT INTO application
        (student_name, email, gpa, ielts, university_id, applied_at)
        VALUES (?, ?, ?, ?, ?, NOW())`,
       [name, email, gpaNum, ieltsNum, universityId]
